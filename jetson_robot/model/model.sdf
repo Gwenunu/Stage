@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <sdf version='1.6'>
 <!-- JETSON ROBOT -->
-  <model name='jetson' canonical_link='base_link'>
-  <!--LINK-->
-    <!-- BASE LINK -->
+<model name='jetson' canonical_link='base_link'>
       <link name='base_link'>
         <pose relative_to='__model__'>0 0 0.5 0 -0 0</pose>
         <inertial>
@@ -37,9 +35,23 @@
             </box>
           </geometry>
           <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
         </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
       </link>
-    <!-- CAMERA LINK -->
       <link name='camera_link'>
         <pose relative_to='base_link'>0.07 0 0.0385 0 -0 0</pose>
         <inertial>
@@ -86,7 +98,6 @@
             </friction>
           </surface>
         </collision>
-        
         <sensor name='cameraLeft' type='camera'>
           <pose relative_to='camera_chassis'>0 0.03649 0 0 -0 0</pose>
           <always_on>1</always_on>
@@ -106,12 +117,14 @@
             </clip>
             <lens>
               <intrinsics>
-                <fx>307.99879313442784</fx>
-                <fy>328.57751082369407</fy>
-                <cx>280.24657373225784</cx>
-                <cy>134.9335316514946</cy>
+                <fx>307.999</fx>
+                <fy>328.578</fy>
+                <cx>280.247</cx>
+                <cy>134.934</cy>
                 <s>0</s>
               </intrinsics>
+              <type>stereographic</type>
+              <scale_to_hfov>1</scale_to_hfov>
               <projection>
                 <p_fx>312.8884288345382</p_fx>
                 <p_fy>312.8884288345382</p_fy>
@@ -122,53 +135,68 @@
               </projection>
             </lens>
           </camera>
+          <plugin name='camera_left_controller' filename='libgazebo_ros_camera.so'>
+            <camera_name>cameraLeft</camera_name>
+            <frame_name>camera_left</frame_name>
+            <hack_baseline>0.07298</hack_baseline>
+            <min_depth>0.001</min_depth>
+            <max_depth>5.0</max_depth>
+          </plugin>
         </sensor>
-
         <sensor name='cameraRight' type='camera'>
-          <pose relative_to='camera_chassis'>0.0665 -0.03649 0.0395 0 -0 0</pose>
-            <always_on>1</always_on>
-            <update_rate>4</update_rate>
-            <visualize>1</visualize>
-            <topic>camera/right/</topic>
-            <camera>
-              <horizontal_fov>2.70526</horizontal_fov>
-              <image>
-                <width>500</width>
-                <height>300</height>
-                <format>L8</format>
-              </image>
-              <clip>
-                <near>0.1</near>
-                <far>100</far>
-              </clip>
-              <lens>
-                <intrinsics>
-                  <fx>307.1754049460059</fx>
-                  <fy>328.803046449949</fy>
-                  <cx>265.74658118131305</cx>
-                  <cy>141.73334383034592</cy>
-                  <s>0</s>
-                </intrinsics>
-                <projection>
-                  <p_fx>312.8884288345382</p_fx>
-                  <p_fy>312.8884288345382</p_fy>
-                  <p_cx>312.28302001953125</p_cx>
-                  <p_cy>135.72957611083984</p_cy>
-                  <tx>-22.834775948524072</tx>
-                  <ty>0.0</ty>
-                </projection>
-              </lens>
-            </camera>
+          <pose relative_to='camera_chassis'>0 -0.03649 0 0 -0 0</pose>
+          <always_on>1</always_on>
+          <update_rate>4</update_rate>
+          <visualize>1</visualize>
+          <topic>camera/right/</topic>
+          <camera>
+            <horizontal_fov>2.70526</horizontal_fov>
+            <image>
+              <width>500</width>
+              <height>300</height>
+              <format>L8</format>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>100</far>
+            </clip>
+            <lens>
+              <intrinsics>
+                <fx>307.175</fx>
+                <fy>328.803</fy>
+                <cx>265.747</cx>
+                <cy>141.733</cy>
+                <s>0</s>
+              </intrinsics>
+              <type>stereographic</type>
+              <scale_to_hfov>1</scale_to_hfov>
+              <projection>
+                <p_fx>312.8884288345382</p_fx>
+                <p_fy>312.8884288345382</p_fy>
+                <p_cx>312.28302001953125</p_cx>
+                <p_cy>135.72957611083984</p_cy>
+                <tx>-22.834775948524072</tx>
+                <ty>0.0</ty>
+              </projection>
+            </lens>
+          </camera>
+          <plugin name='camera_right_controller' filename='libgazebo_ros_camera.so'>
+            <camera_name>cameraRight</camera_name>
+            <frame_name>camera_right</frame_name>
+            <hack_baseline>0.07298</hack_baseline>
+            <min_depth>0.001</min_depth>
+            <max_depth>5.0</max_depth>
+          </plugin>
         </sensor>
-
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
       </link>
-
-    <!-- IMU LINK -->
-      <link name="imu_link">
-          <gravity>true</gravity>
-          <pose relative_to='base_link'>0.0083 -0.04141 0.077 0 0 1.57079632679</pose>
-          <inertial>
-          <mass>0.00130</mass>
+      <link name='imu_link'>
+        <gravity>1</gravity>
+        <pose relative_to='base_link'>0.0083 -0.04141 0.0077 0 -0 1.5708</pose>
+        <inertial>
+          <mass>0.0013</mass>
           <inertia>
             <ixx>1e-06</ixx>
             <ixy>0</ixy>
@@ -178,87 +206,62 @@
             <izz>1e-06</izz>
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
-          </inertial>
-          <visual name='visual'>
-            <geometry>
-              <box>
-                <size>0.018 0.0013 0.0012</size>
-              </box>
-            </geometry>
-            <material>
-              <ambient>0 0 1 1</ambient>
-              <diffuse>0 0 1 1</diffuse>
-              <specular>0 0 1 1</specular>
-            </material>
-          </visual>
-          <collision name='collision'>
-            <geometry>
-              <box>
-                <size>0.0018 0.0013 0.0012</size>
-              </box>
-            </geometry>
-            <max_contacts>10</max_contacts>
-            <surface>
-              <contact>
+        </inertial>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.018 0.013 0.0012</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0 1 0 1</specular>
+          </material>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.018 0.013 0.0012</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
                 <ode/>
-              </contact>
-              <bounce/>
-              <friction>
-                <torsional>
-                  <ode/>
-                </torsional>
-                <ode/>
-              </friction>
-            </surface>
-          </collision>
-          <sensor name="imu_jetson" type="imu">
-              <always_on>true</always_on>
-              <update_rate>50</update_rate>
-              <imu>
-                <angular_velocity>
-                  <x>
-                    <noise type="gaussian">
-                      <mean>0.0</mean>
-                      <stddev>2e-4</stddev>
-                    </noise>
-                  </x>
-                  <y>
-                    <noise type="gaussian">
-                      <mean>0.0</mean>
-                      <stddev>2e-4</stddev>
-                    </noise>
-                  </y>
-                  <z>
-                    <noise type="gaussian">
-                      <mean>0.0</mean>
-                      <stddev>2e-4</stddev>
-                    </noise>
-                  </z>
-                </angular_velocity>
-                <linear_acceleration>
-                  <x>
-                    <noise type="gaussian">
-                      <mean>0.0</mean>
-                      <stddev>1.7e-2</stddev>
-                    </noise>
-                  </x>
-                  <y>
-                    <noise type="gaussian">
-                      <mean>0.0</mean>
-                      <stddev>1.7e-2</stddev>
-                    </noise>
-                  </y>
-                  <z>
-                    <noise type="gaussian">
-                      <mean>0.0</mean>
-                      <stddev>1.7e-2</stddev>
-                    </noise>
-                  </z>
-                </linear_acceleration>
-              </imu>
-            </sensor>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <sensor name='imu_sensor' type='imu'>
+          <always_on>1</always_on>
+          <update_rate>50</update_rate>
+          <visualize>1</visualize>
+          <pose>0.0083 -0.04141 0.0077 0 -0 1.5708</pose>
+          <plugin name='imu_plugin' filename='libgazebo_ros_imu_sensor.so'>
+            <topic_name>/imu/imu_sensor</topic_name>
+            <bodyName>imu_link</bodyName>
+            <updateRateHZ>10.0</updateRateHZ>
+            <gaussianNoise>0.0</gaussianNoise>
+            <xyzOffset>0 0 0</xyzOffset>
+            <rpyOffset>0 0 0</rpyOffset>
+            <frameName>imu_link</frameName>
+            <ros>
+              <remapping>~/out:=/imu/data</remapping>
+            </ros>
+          </plugin>
+          <imu/>
+        </sensor>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
       </link>
-    <!-- LEFT WHEEL LINK -->
       <link name='leftWheel'>
         <pose relative_to='base_link'>0.035 0.044 -0.012 -1.5707 0 0</pose>
         <inertial>
@@ -319,7 +322,6 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-    <!-- RIGHT WHEEL LINK -->
       <link name='rightWheel'>
         <pose relative_to='base_link'>0.035 -0.044 -0.012 -1.5707 0 0</pose>
         <inertial>
@@ -388,151 +390,118 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-    <!-- CASTER LINK -->
-    <link name='caster'>
-      <pose relative_to='base_link'>-0.05 0 -0.0271 0 -0 0</pose>
-      <inertial>
-        <mass>0.005</mass>
-        <inertia>
-          <ixx>1e-06</ixx>
-          <ixy>0</ixy>
-          <ixz>0</ixz>
-          <iyy>1e-06</iyy>
-          <iyz>0</iyz>
-          <izz>1e-06</izz>
-        </inertia>
-        <pose>0 0 0 0 -0 0</pose>
-      </inertial>
-      <visual name='visual'>
-        <geometry>
-          <sphere>
-            <radius>0.0113</radius>
-          </sphere>
-        </geometry>
-        <material>
-          <ambient>0 1 0 1</ambient>
-          <diffuse>0 1 0 1</diffuse>
-          <specular>0 1 0 1</specular>
-        </material>
-      </visual>
-      <collision name='collision'>
-        <geometry>
-          <sphere>
-            <radius>0.0113</radius>
-          </sphere>
-        </geometry>
-        <max_contacts>10</max_contacts>
-        <surface>
-          <contact>
-            <ode/>
-          </contact>
-          <bounce/>
-          <friction>
-            <torsional>
+      <link name='caster'>
+        <pose relative_to='base_link'>-0.05 0 -0.0271 0 -0 0</pose>
+        <inertial>
+          <mass>0.005</mass>
+          <inertia>
+            <ixx>1e-06</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1e-06</iyy>
+            <iyz>0</iyz>
+            <izz>1e-06</izz>
+          </inertia>
+          <pose>0 0 0 0 -0 0</pose>
+        </inertial>
+        <visual name='visual'>
+          <geometry>
+            <sphere>
+              <radius>0.0113</radius>
+            </sphere>
+          </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0 1 0 1</specular>
+          </material>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <sphere>
+              <radius>0.0113</radius>
+            </sphere>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
               <ode/>
-            </torsional>
-            <ode/>
-          </friction>
-        </surface>
-      </collision>
-      <self_collide>0</self_collide>
-      <enable_wind>0</enable_wind>
-      <kinematic>0</kinematic>
-    </link>
-  <!-- JOINTS -->
-
-    <!-- CAMERA JOINT -->
-    <joint name='cam_joint' type='fixed'>
-      <pose relative_to='base_link'>0 0 0 0 -0 0</pose>
-      <parent>base_link</parent>
-      <child>camera_link</child>
-      <axis>
-        <xyz expressed_in='__model__'>1 0 0</xyz>
-        <limit>
-          <lower>-1.79769e+308</lower>
-          <upper>1.79769e+308</upper>
-        </limit>
-      </axis>
-    </joint>
-    <!-- LEFT WHEEL JOINT -->
-    <joint name='leftWheel_joint' type='revolute'>
-      <pose relative_to='leftWheel'>0 0 0 0 -0 0</pose>
-      <parent>base_link</parent>
-      <child>leftWheel</child>
-      <axis>
-        <xyz expressed_in='__model__'>0 1 0</xyz>
-        <limit>
-          <lower>-1.79769e+308</lower>
-          <upper>1.79769e+308</upper>
-        </limit>
-        <dynamics>
-          <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
-        </dynamics>
-      </axis>
-    </joint>
-    <!-- RIGHT WHEEL JOINT -->
-    <joint name='rightWheel_joint' type='revolute'>
-      <pose relative_to='rightWheel'>0 0 0 0 -0 0</pose>
-      <parent>base_link</parent>
-      <child>rightWheel</child>
-      <axis>
-        <xyz expressed_in='__model__'>0 1 0</xyz>
-        <limit>
-          <lower>-1.79769e+308</lower>
-          <upper>1.79769e+308</upper>
-        </limit>
-        <dynamics>
-          <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
-        </dynamics>
-      </axis>
-    </joint>
-    <!-- CASTER JOINT -->
-    <joint name='caster_wheel' type='ball'>
-      <parent>base_link</parent>
-      <child>caster</child>
-    </joint>
-    <!-- IMU JOINT -->
-    <joint name="imu_joint" type="fixed">
-      <parent>base_link</parent>
-      <child>imu_link</child>
-      <origin xyz="0.0083 -0.04141 0.0077"/>
-    </joint>
-
-  <!-- PLUGIN -->
-    <plugin name='differential_drive_controller' filename='libgazebo_ros_diff_drive.so'>
-      <left_joint>leftWheel_joint</left_joint>
-      <right_joint>rightWheel_joint</right_joint>
-      <wheel_separation>0.08</wheel_separation>
-      <wheel_diameter>0.057</wheel_diameter>
-      <max_wheel_acceleration>1</max_wheel_acceleration>
-      <max_wheel_torque>2</max_wheel_torque>
-      <command_topic>cmd_vel</command_topic>
-    </plugin>
-
-    <plugin name="imu_jetson" filename="libgazebo_ros_imu.so">
-      <initial_orientation_as_reference>false</initial_orientation_as_reference>
-      <ros>
-        <remapping>~/out:=/imu/data</remapping>
-      </ros>
-    </plugin>
-
-    <plugin name='camera_left_controller' filename='libgazebo_ros_camera.so'>
-      <camera_name>cameraLeft</camera_name>
-      <frame_name>camera_left</frame_name>
-      <hack_baseline>0.07298</hack_baseline>
-      <min_depth>0.001</min_depth>
-      <max_depth>5.0</max_depth>
-    </plugin>
-
-    <plugin name='camera_right_controller' filename='libgazebo_ros_camera.so'>
-      <camera_name>cameraRight</camera_name>
-      <frame_name>camera_right</frame_name>
-      <hack_baseline>0.07298</hack_baseline>
-      <min_depth>0.001</min_depth>
-      <max_depth>5.0</max_depth>
-    </plugin> 
-  </model>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='cam_joint' type='fixed'>
+        <pose relative_to='base_link'>0 0 0 0 -0 0</pose>
+        <parent>base_link</parent>
+        <child>camera_link</child>
+        <axis>
+          <xyz expressed_in='__model__'>1 0 0</xyz>
+          <limit>
+            <lower>-1.79769e+308</lower>
+            <upper>1.79769e+308</upper>
+          </limit>
+        </axis>
+      </joint>
+      <joint name='leftWheel_joint' type='revolute'>
+        <pose relative_to='leftWheel'>0 0 0 0 -0 0</pose>
+        <parent>base_link</parent>
+        <child>leftWheel</child>
+        <axis>
+          <xyz expressed_in='__model__'>0 1 0</xyz>
+          <limit>
+            <lower>-1.79769e+308</lower>
+            <upper>1.79769e+308</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <joint name='rightWheel_joint' type='revolute'>
+        <pose relative_to='rightWheel'>0 0 0 0 -0 0</pose>
+        <parent>base_link</parent>
+        <child>rightWheel</child>
+        <axis>
+          <xyz expressed_in='__model__'>0 1 0</xyz>
+          <limit>
+            <lower>-1.79769e+308</lower>
+            <upper>1.79769e+308</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <joint name='caster_wheel' type='ball'>
+        <parent>base_link</parent>
+        <child>caster</child>
+      </joint>
+      <joint name='imu_joint' type='fixed'>
+        <parent>base_link</parent>
+        <child>imu_link</child>
+        <origin xyz='0.0083 -0.04141 0.0077'/>
+      </joint>
+      <plugin name='differential_drive_controller' filename='libgazebo_ros_diff_drive.so'>
+        <left_joint>leftWheel_joint</left_joint>
+        <right_joint>rightWheel_joint</right_joint>
+        <wheel_separation>0.08</wheel_separation>
+        <wheel_diameter>0.057</wheel_diameter>
+        <max_wheel_acceleration>1</max_wheel_acceleration>
+        <max_wheel_torque>20</max_wheel_torque>
+        <command_topic>cmd_vel</command_topic>
+      </plugin>
+    </model>
 
   </sdf>
